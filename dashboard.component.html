@@ -8,9 +8,21 @@
           Telecom Operations Dashboard
         </h1>
       </div>
-      <div class="col-auto">
+      <div class="col-auto d-flex align-items-center gap-3">
         <span class="badge bg-success fs-6">Live</span>
-        <small class="ms-2">Last Updated: {{ getCurrentTime() }}</small>
+        <small>Last Updated: {{ getCurrentTime() }}</small>
+        <div class="dropdown">
+          <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            <i class="bi bi-person-circle me-1"></i>
+            {{ getCurrentUser() }}
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profile</a></li>
+            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Settings</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" (click)="logout()"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -49,11 +61,11 @@
     <div class="col-md-3 mb-3">
       <div class="card text-center h-100 shadow-sm">
         <div class="card-body">
-          <i class="bi bi-wifi display-4 text-info mb-3"></i>
-          <h3 class="text-info">{{ networkUptime }}%</h3>
+          <i class="bi bi-router display-4 text-warning mb-3"></i>
+          <h3 class="text-warning">{{ networkUptime }}%</h3>
           <p class="text-muted">Network Uptime</p>
           <small class="text-success">
-            <i class="bi bi-arrow-up"></i> +0.5%
+            <i class="bi bi-arrow-up"></i> +0.1%
           </small>
         </div>
       </div>
@@ -62,125 +74,123 @@
     <div class="col-md-3 mb-3">
       <div class="card text-center h-100 shadow-sm">
         <div class="card-body">
-          <i class="bi bi-gear-fill display-4 text-warning mb-3"></i>
-          <h3 class="text-warning">{{ activeServices | number }}</h3>
+          <i class="bi bi-gear-fill display-4 text-info mb-3"></i>
+          <h3 class="text-info">{{ activeServices | number }}</h3>
           <p class="text-muted">Active Services</p>
           <small class="text-success">
-            <i class="bi bi-arrow-up"></i> +3.1%
+            <i class="bi bi-arrow-up"></i> +2.1%
           </small>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Charts Section -->
-  <div class="row mb-4">
-    <div class="col-lg-4 mb-3">
-      <div class="card h-100">
-        <div class="card-header">
-          <h5 class="card-title mb-0">Network Performance</h5>
-        </div>
-        <div class="card-body">
-          <canvas id="networkChart" style="height: 280px;"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-lg-4 mb-3">
-      <div class="card h-100">
-        <div class="card-header">
-          <h5 class="card-title mb-0">Customer Growth</h5>
-        </div>
-        <div class="card-body">
-          <canvas id="customerChart" style="height: 280px;"></canvas>
+    <!-- Charts Section -->
+    <div class="row mb-4">
+      <div class="col-lg-4 mb-3">
+        <div class="card h-100">
+          <div class="card-header">
+            <h5 class="card-title mb-0">Network Performance</h5>
+          </div>
+          <div class="card-body">
+            <canvas id="networkChart" style="height: 280px;"></canvas>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="col-lg-4 mb-3">
-      <div class="card h-100">
-        <div class="card-header">
-          <h5 class="card-title mb-0">Service Distribution</h5>
-        </div>
-        <div class="card-body">
-          <canvas id="revenueChart" style="height: 280px;"></canvas>
+      <div class="col-lg-4 mb-3">
+        <div class="card h-100">
+          <div class="card-header">
+            <h5 class="card-title mb-0">Customer Growth</h5>
+          </div>
+          <div class="card-body">
+            <canvas id="customerChart" style="height: 280px;"></canvas>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Data Tables Section -->
-  <div class="row">
-    <div class="col-lg-6 mb-4">
-      <div class="card h-100">
-        <div class="card-header">
-          <h5 class="card-title mb-0">Network Status by Region</h5>
-        </div>
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-hover">
-              <thead class="table-light">
-                <tr>
-                  <th>Region</th>
-                  <th>Status</th>
-                  <th>Uptime</th>
-                  <th>Latency</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let item of networkStatus">
-                  <td>{{ item.region }}</td>
-                  <td>
-                    <span class="badge" [ngClass]="'bg-' + getStatusColor(item.status)">
-                      {{ item.status }}
-                    </span>
-                  </td>
-                  <td>{{ item.uptime }}%</td>
-                  <td>{{ item.latency }}ms</td>
-                </tr>
-              </tbody>
-            </table>
+      <div class="col-lg-4 mb-3">
+        <div class="card h-100">
+          <div class="card-header">
+            <h5 class="card-title mb-0">Service Distribution</h5>
+          </div>
+          <div class="card-body">
+            <canvas id="revenueChart" style="height: 280px;"></canvas>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="col-lg-6 mb-4">
-      <div class="card h-100">
-        <div class="card-header">
-          <h5 class="card-title mb-0">Recent System Alerts</h5>
+    <!-- Data Tables Section -->
+    <div class="row">
+      <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+          <div class="card-header">
+            <h5 class="card-title mb-0">Network Status by Region</h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead class="table-light">
+                  <tr>
+                    <th>Region</th>
+                    <th>Status</th>
+                    <th>Uptime</th>
+                    <th>Latency</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of networkStatus">
+                    <td>{{ item.region }}</td>
+                    <td>
+                      <span class="badge" [ngClass]="'bg-' + getStatusColor(item.status)">
+                        {{ item.status }}
+                      </span>
+                    </td>
+                    <td>{{ item.uptime }}%</td>
+                    <td>{{ item.latency }}ms</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-hover">
-              <thead class="table-light">
-                <tr>
-                  <th>Time</th>
-                  <th>Type</th>
-                  <th>Message</th>
-                  <th>Severity</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let alert of recentAlerts">
-                  <td>{{ alert.time }}</td>
-                  <td>{{ alert.type }}</td>
-                  <td>{{ alert.message }}</td>
-                  <td>
-                    <span class="badge" [ngClass]="'bg-' + getSeverityColor(alert.severity)">
-                      {{ alert.severity }}
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+      </div>
+
+      <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+          <div class="card-header">
+            <h5 class="card-title mb-0">Recent System Alerts</h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead class="table-light">
+                  <tr>
+                    <th>Time</th>
+                    <th>Type</th>
+                    <th>Message</th>
+                    <th>Severity</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let alert of recentAlerts">
+                    <td>{{ alert.time }}</td>
+                    <td>{{ alert.type }}</td>
+                    <td>{{ alert.message }}</td>
+                    <td>
+                      <span class="badge" [ngClass]="'bg-' + getSeverityColor(alert.severity)">
+                        {{ alert.severity }}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
+  </div>
 </div>
-
-<!-- Chatbot Component -->
-<app-chatbot></app-chatbot>
