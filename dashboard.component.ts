@@ -1,5 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { TelecomDataService } from '../services/telecom-data.service';
+import { AuthService } from '../services/auth.service';
 import { Chart, registerables } from 'chart.js';
 
 Chart.register(...registerables);
@@ -44,7 +46,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   networkColumns: string[] = ['region', 'status', 'uptime', 'latency'];
   alertColumns: string[] = ['time', 'type', 'message', 'severity'];
 
-  constructor(private telecomService: TelecomDataService) { }
+  constructor(
+    private telecomService: TelecomDataService,
+    private authService: AuthService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.loadDashboardData();
@@ -52,6 +58,15 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   getCurrentTime(): string {
     return new Date().toLocaleTimeString();
+  }
+
+  getCurrentUser(): string {
+    return this.authService.getCurrentUser() || 'Admin';
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 
   ngAfterViewInit(): void {
